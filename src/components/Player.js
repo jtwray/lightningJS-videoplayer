@@ -31,6 +31,7 @@ export class Player extends Lightning.Component {
   }
   _init() {
     this.index = 0
+    this.timeoutHandler()
     this._setState('Play')
 
     VideoPlayer.consumer(this)
@@ -40,31 +41,6 @@ export class Player extends Lightning.Component {
     this.url = 'https://dsqqu7oxq6o1v.cloudfront.net/motion-array-1081982-uvjZL4YmLG-high.mp4'
     VideoPlayer.open(this.url)
   }
-
-  _handleLeft() {
-    if (this.index == 0) return
-
-    this.index--
-
-    let stateName = this.tag('Buttons').children[this.index].name
-    this._setState(stateName)
-  }
-
-  _handleRight() {
-    if (this.index == this.tag('Buttons').children.length - 1) return
-
-    this.index++
-
-    let stateName = this.tag('Buttons').children[this.index].name
-    this._setState(stateName)
-  }
-
-  setButtonColor(tag, color) {
-    this.tag(tag).patch({
-      text: { textColor: color },
-    })
-  }
-
   static _states() {
     return [
       class Play extends this {
@@ -90,5 +66,53 @@ export class Player extends Lightning.Component {
         }
       },
     ]
+  }
+  toggleInterface(visibleInterface) {
+    // this.visibleInterface = !this.visibleInterface
+
+    this.patch({
+      smooth: {
+        alpha: visibleInterface ? 1 : 0,
+      },
+    })
+    if (visibleInterface) {
+      this.timeoutHandler()
+    }
+  }
+  timeoutHandler() {
+    if (this.timeout) {
+      clearTimeout(this.timeout)
+    }
+
+    this.timeout = setTimeout(() => {
+      this.toggleInterface(false)
+    }, 3000)
+  }
+  setButtonColor(tag, color) {
+    this.tag(tag).patch({
+      text: { textColor: color },
+    })
+  }
+  _handleEnter() {
+    // if (!this.visibleInterface) return;
+  }
+  _handleLeft() {
+    if (this.index == 0) return
+
+    this.index--
+
+    let stateName = this.tag('Buttons').children[this.index].name
+    this._setState(stateName)
+    this.toggleInterface(true)
+  }
+
+  _handleRight() {
+    if (this.index == this.tag('Buttons').children.length - 1) return
+
+    this.index++
+
+    let stateName = this.tag('Buttons').children[this.index].name
+    this._setState(stateName)
+    this.toggleInterface(true)
   }
 }
