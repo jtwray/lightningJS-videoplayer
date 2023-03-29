@@ -1,0 +1,6 @@
+{
+  "name": "video-player",
+  "identifier": "com.domain.app.videoplayer",
+  "version": "1.0.0",
+  "icon": "./static/icon.png"
+}
