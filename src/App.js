@@ -31,4 +31,7 @@ export default class App extends Lightning.Component {
       },
     }
   }
+  _getFocused() {
+    return this.tag('Container')
+  }
 }
